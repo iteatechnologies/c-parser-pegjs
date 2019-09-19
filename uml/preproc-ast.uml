@@ -1,0 +1,45 @@
+@startuml
+
+hide empty members
+hide circle
+
+parseTree *-- block
+
+block *-- if_stmt
+block *-- code
+block *-- SL_COMMENT
+
+if_stmt *--ifdefs
+if_stmt *--_if
+
+ifdefs : "#ifdef" | "#ifndef"
+ifdefs *--ID
+ifdefs *--afterif
+class ID #orange
+
+_if : "#if"
+_if *--const_expr
+_if *--afterif
+
+afterif : "#endif"
+afterif *--block
+afterif *--get_elifs
+afterif *--else
+
+else : "#else"
+else *--block
+
+get_elifs : "#elif"
+get_elifs *--const_expr
+get_elifs *--block
+
+const_expr *--get_upto_eol
+
+code *--ML_COMMENT
+
+class code #orange
+class SL_COMMENT #orange
+class ML_COMMENT #orange
+class get_upto_eol #orange
+
+@enduml

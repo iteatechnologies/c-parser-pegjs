@@ -1,0 +1,154 @@
+@startuml
+
+hide empty members
+hide circle
+
+parseTree *-- statements
+
+statements *-- preproc
+statements *-- typedef
+statements *-- struct
+statements *-- union
+statements *-- enum
+statements *-- extern
+statements *-- func_call
+statements *-- inline_func
+statements *-- declare 
+
+
+typedef : "typedef" ';'
+typedef *-- "<t type>"
+"<t type>" *-- td_struct
+"<t type>" *-- td_enum
+"<t type>" *-- td_union
+"<t type>" *-- func_ptr
+"<t type>" *-- ID
+class "<t type>" #pink
+typedef *-- aliases
+
+aliases *-- get_aliases
+get_aliases *-- alias
+get_aliases : ','
+class alias #orange
+
+td_struct : "struct { }"
+td_struct *-- ID
+td_struct *-- "<s members>"
+
+"<s members>" *-- get_mem
+"<s members>" *-- union
+"<s members>" *-- define
+"<s members>" *-- s_func_ptr
+class "<s members>" #pink
+
+struct : ';'
+struct *-- td_struct
+struct *-- ID
+
+get_mem : ';'
+get_mem *-- get_tokens
+get_mem *-- get_fields
+
+get_fields *-- field
+get_fields : ','
+
+field : '*' 
+field *-- ID
+field *-- "<size>"
+"<size>" : '[' ']'
+class "<size>" #orange
+field *-- "<width>"
+"<width>" : ':'
+"<width>" *-- ID
+"<width>" *-- INT
+
+td_enum : "enum { }"
+td_enum *-- ID
+td_enum *-- get_enums
+get_enums : '=' ','
+get_enums *-- ID
+get_enums *-- expr
+
+enum : ';'
+enum *-- td_enum
+
+td_union : "union { }"
+td_union *-- ID
+td_union *-- "<u members>"
+"<u members>" *-- get_mem
+"<u members>" *-- struct
+class "<u members>" #pink
+
+union : ';'
+union *-- td_union
+
+func_ptr : "(* )"
+func_ptr *-- get_tokens 
+func_ptr *-- ID
+func_ptr *-- paramList
+
+s_func_ptr : ';'
+s_func_ptr *-- func_ptr
+
+func_call *-- ID
+func_call *-- argList
+
+argList : '(' ')'
+argList *-- get_args
+get_args *-- arg
+get_args : ','
+class arg #orange
+
+inline_func *-- get_tokens
+inline_func *-- method
+inline_func *-- block
+block : '{' '}'
+class block #orange
+
+declare : ';'
+declare *-- get_tokens
+declare *-- "<d type>"
+"<d type>" *-- method
+"<d type>" *-- array
+"<d type>" *-- ID
+class "<d type>" #pink
+
+extern : "extern C { }"
+extern *-- statements
+
+method *-- ID
+method *-- paramList
+
+array *-- ID
+array *-- get_index
+get_index : '[' ']'
+class get_index #orange
+
+expr : '+' '<<' '(' ')'
+expr *-- atom
+atom *-- ID
+atom *-- INT
+atom *-- STRING
+class ID #orange
+class INT #orange
+class STRING #orange
+
+paramList : '(' ')'
+paramList *-- get_params
+get_params : ','
+get_params *-- get_tokens
+get_params *-- "<p type>"
+"<p type>" *-- func_ptr
+"<p type>" *-- array
+"<p type>" *-- ID
+"<p type>" *-- vargs
+class vargs #orange
+
+get_tokens : '*'
+get_tokens *-- get_id
+class get_id #orange
+
+class preproc #palegreen
+class define #palegreen
+
+@enduml

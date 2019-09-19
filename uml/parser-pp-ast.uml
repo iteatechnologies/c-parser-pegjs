@@ -1,0 +1,36 @@
+@startuml
+
+hide empty members
+hide circle
+
+preproc *-- include
+preproc *-- define
+preproc *-- undef
+preproc *-- pragma
+preproc *-- unsupported
+
+include : "#include"
+include *-- includef
+includef : '"' '"' | '<' '>'
+includef *-- hfile
+class hfile #orange
+
+define : "#define"
+define *-- ID
+define *-- argList
+define *-- get_upto_eol
+class ID #orange
+class get_upto_eol #orange
+
+undef : "#undef"
+undef *-- ID
+pragma : "#pragma"
+pragma *-- get_upto_eol
+unsupported : "#line" | "#error"
+class unsupported #orange
+
+class preproc #palegreen
+class define #palegreen
+class argList #palegreen
+
+@enduml
